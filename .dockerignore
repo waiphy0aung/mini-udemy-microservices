@@ -1,0 +1,9 @@
+# Keep the image lean & avoid leaking secrets
+.git
+.env
+**/node_modules
+**/dist
+**/.next
+**/coverage
+**/*.log
+**/.DS_Store

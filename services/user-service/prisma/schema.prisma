@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  role       Role     @default(STUDENT)
+  isActive   Boolean  @default(true)
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  profile           UserProfile?
+  refreshTokens     RefreshToken[]
+  passwordResets    PasswordReset[]
+  instructorProfile InstructorProfile?
+
+  @@map("users")
+}
+
+model UserProfile {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  firstName   String?
+  lastName    String?
+  avatar      String?
+  bio         String?
+  dateOfBirth DateTime?
+  phone       String?
+  country     String?
+  timezone    String?
+  language    String   @default("en")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model InstructorProfile {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  isApproved  Boolean  @default(false)
+  expertise   String[]
+  experience  String?
+  education   String?
+  website     String?
+  linkedIn    String?
+  youtube     String?
+  rating      Float?
+  studentCount Int     @default(0)
+  courseCount  Int     @default(0)
+  totalEarnings Float  @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("instructor_profiles")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
+}
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}

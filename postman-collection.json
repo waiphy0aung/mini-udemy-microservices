@@ -1,0 +1,704 @@
+{
+  "info": {
+    "name": "Mini-Udemy API",
+    "description": "Complete API collection for Mini-Udemy microservices platform",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"STUDENT\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new user account. Role can be STUDENT or INSTRUCTOR."
+          }
+        },
+        {
+          "name": "Register Instructor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"instructor@example.com\",\n  \"password\": \"SecurePass123\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"role\": \"INSTRUCTOR\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new instructor account"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login with email and password to get access token"
+          }
+        },
+        {
+          "name": "Login Admin (Seeded)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login as seeded admin user"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Refresh access token using refresh token"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "description": "Request password reset email (check server logs for reset token in development)"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-from-email-or-logs\",\n  \"newPassword\": \"NewSecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "Reset password using token from email"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Logout and invalidate refresh token"
+          }
+        }
+      ],
+      "description": "Authentication endpoints for user registration, login, and password management"
+    },
+    {
+      "name": "👤 User Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Get current authenticated user profile"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Full-stack developer passionate about learning new technologies\",\n  \"country\": \"United States\",\n  \"timezone\": \"America/New_York\",\n  \"language\": \"en\",\n  \"phone\": \"+1-555-0123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "profile"
+              ]
+            },
+            "description": "Update user profile information"
+          }
+        },
+        {
+          "name": "Update Instructor Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expertise\": [\"JavaScript\", \"React\", \"Node.js\", \"TypeScript\", \"AWS\"],\n  \"experience\": \"5 years of full-stack development experience with modern web technologies. Specialized in React ecosystem and serverless architectures.\",\n  \"education\": \"Bachelor of Science in Computer Science from Tech University\",\n  \"website\": \"https://johndoe.dev\",\n  \"linkedIn\": \"https://linkedin.com/in/johndoe\",\n  \"youtube\": \"https://youtube.com/c/johndoedev\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/instructor-profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "instructor-profile"
+              ]
+            },
+            "description": "Update instructor profile (only for users with INSTRUCTOR role)"
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"SecurePass123\",\n  \"newPassword\": \"NewSecurePass456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "password"
+              ]
+            },
+            "description": "Change user password (requires current password verification)"
+          }
+        },
+        {
+          "name": "Delete My Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Deactivate current user account (soft delete)"
+          }
+        }
+      ],
+      "description": "User profile management endpoints"
+    },
+    {
+      "name": "👨‍💼 Admin Operations",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users?page=1&limit=10&role=STUDENT&search=john",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "role",
+                  "value": "STUDENT",
+                  "description": "Filter by role (STUDENT, INSTRUCTOR, ADMIN)",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "john",
+                  "description": "Search by name or email",
+                  "disabled": true
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "Filter by active status",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all users with filtering and pagination (Admin only)"
+          }
+        },
+        {
+          "name": "Get All Instructors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/instructors?page=1&limit=10&isApproved=false&expertise=JavaScript",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "instructors"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "isApproved",
+                  "value": "false",
+                  "description": "Filter by approval status",
+                  "disabled": true
+                },
+                {
+                  "key": "expertise",
+                  "value": "JavaScript",
+                  "description": "Filter by expertise",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all instructors with filtering (Admin/Instructor role required)"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "Get specific user by ID (Admin only)"
+          }
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/2/deactivate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "2",
+                "deactivate"
+              ]
+            },
+            "description": "Deactivate a user account (Admin only)"
+          }
+        },
+        {
+          "name": "Reactivate User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/2/reactivate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "2",
+                "reactivate"
+              ]
+            },
+            "description": "Reactivate a deactivated user account (Admin only)"
+          }
+        },
+        {
+          "name": "Verify User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/2/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "2",
+                "verify"
+              ]
+            },
+            "description": "Verify a user account (Admin only)"
+          }
+        },
+        {
+          "name": "Approve Instructor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/2/approve-instructor",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "2",
+                "approve-instructor"
+              ]
+            },
+            "description": "Approve instructor application (Admin only)"
+          }
+        }
+      ],
+      "description": "Administrative operations for user management"
+    },
+    {
+      "name": "🏥 Health & Utility",
+      "item": [
+        {
+          "name": "Gateway Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Check Gateway service health"
+          }
+        },
+        {
+          "name": "Services Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health/services",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health",
+                "services"
+              ]
+            },
+            "description": "Check health of all downstream services"
+          }
+        },
+        {
+          "name": "User Service Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Direct health check of User Service"
+          }
+        }
+      ],
+      "description": "Health checks and utility endpoints"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  }
+}

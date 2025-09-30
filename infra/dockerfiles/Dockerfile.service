@@ -1,0 +1,93 @@
+# ---- Base ----
+FROM node:20-slim AS base
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+  && rm -rf /var/lib/apt/lists/*
+
+# Enable pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+WORKDIR /app
+
+# ---- Deps (install all workspace deps incl. the service) ----
+FROM base AS deps
+ARG SERVICE_DIR
+
+# Copy workspace manifests first for better caching
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY shared/package.json ./shared/package.json
+# Include the service manifest so pnpm resolves its deps (incl. prisma) now
+COPY ${SERVICE_DIR}/package.json ./${SERVICE_DIR}/package.json
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile
+
+# ---- Development ----
+FROM deps AS development
+ARG SERVICE_DIR
+
+# Copy source code
+COPY shared ./shared
+COPY ${SERVICE_DIR} ./${SERVICE_DIR}
+
+# Build shared library
+RUN pnpm --filter @shared build
+
+# Dev server
+WORKDIR /app/${SERVICE_DIR}
+EXPOSE 3001
+CMD ["pnpm", "dev"]
+
+# ---- Build ----
+FROM deps AS build
+ARG SERVICE_DIR
+
+# Copy source code for build
+COPY shared ./shared
+COPY ${SERVICE_DIR} ./${SERVICE_DIR}
+
+# Build shared first
+RUN pnpm --filter @shared build
+
+# If building user-service, run prisma generate then build the service
+RUN if [ "$SERVICE_DIR" = "services/user-service" ]; then \
+      pnpm --filter ./${SERVICE_DIR} db:generate && \
+      pnpm --filter ./${SERVICE_DIR} build; \
+    fi
+
+# ---- Production Runtime ----
+FROM node:20-slim AS production
+ARG SERVICE_DIR
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+  && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd --gid 1001 nodejs && \
+    useradd --uid 1001 --gid nodejs --shell /bin/bash --create-home nodejs
+
+WORKDIR /app
+
+# Copy built artifacts
+COPY --from=build --chown=nodejs:nodejs /app/${SERVICE_DIR}/dist ./dist
+COPY --from=build --chown=nodejs:nodejs /app/${SERVICE_DIR}/package.json ./
+COPY --from=build --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=build --chown=nodejs:nodejs /app/shared/dist ./shared/dist
+
+# App data dirs
+RUN mkdir -p uploads logs && chown -R nodejs:nodejs uploads logs
+
+USER nodejs
+
+EXPOSE 3001
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
+
+CMD ["node", "dist/server.js"]

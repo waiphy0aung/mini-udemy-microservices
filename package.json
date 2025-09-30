@@ -1,0 +1,45 @@
+{
+  "name": "mini-udemy",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "install:all": "pnpm install",
+    "build": "pnpm run --recursive build",
+    "build:shared": "pnpm --filter @shared build",
+    "build:services": "pnpm --filter './services/*' build",
+    "build:gateway": "pnpm --filter api-gateway build",
+    "build:docker": "pnpm clean && cd infra && docker-compose build",
+    "dev": "pnpm --recursive --parallel run dev",
+    "dev:user": "pnpm --filter user-service dev",
+    "dev:course": "pnpm --filter course-service dev",
+    "dev:video": "pnpm --filter video-service dev",
+    "dev:payment": "pnpm --filter payment-service dev",
+    "dev:gateway": "pnpm --filter api-gateway dev",
+    "dev:gateway:stack": "pnpm --filter @shared build && pnpm -r --parallel --filter @shared --filter api-gateway dev",
+    "dev:docker": "cd infra && docker-compose up",
+    "test": "pnpm --recursive run test",
+    "test:user": "pnpm --filter user-service test",
+    "clean": "pnpm --recursive run clean",
+    "db:generate": "pnpm --filter user-service db:generate",
+    "db:migrate": "pnpm --filter user-service db:migrate",
+    "db:studio": "pnpm --filter user-service db:studio",
+    "db:seed": "pnpm --filter user-service db:seed"
+  },
+  "workspaces": [
+    "shared",
+    "gateway",
+    "services/*"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

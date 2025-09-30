@@ -1,0 +1,68 @@
+FROM node:20-slim AS base
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+WORKDIR /app
+
+# Copy workspace files
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY shared/package.json ./shared/package.json
+COPY gateway/package.json ./gateway/package.json
+
+# Development stage
+FROM base AS development
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile
+
+COPY shared ./shared
+COPY gateway ./gateway
+
+RUN pnpm --filter @shared build
+
+WORKDIR /app/gateway
+EXPOSE 3000
+CMD ["pnpm", "dev"]
+
+# Production build
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile
+
+COPY shared ./shared
+COPY gateway ./gateway
+
+RUN pnpm --filter @shared build
+RUN pnpm --filter api-gateway build
+
+# Production stage
+FROM node:20-slim AS production
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd --gid 1001 nodejs && \
+    useradd --uid 1001 --gid nodejs --shell /bin/bash --create-home nodejs
+
+WORKDIR /app
+
+COPY --from=build --chown=nodejs:nodejs /app/gateway/dist ./dist
+COPY --from=build --chown=nodejs:nodejs /app/gateway/package.json ./
+COPY --from=build --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=build --chown=nodejs:nodejs /app/shared/dist ./shared/dist
+
+RUN mkdir -p logs && chown -R nodejs:nodejs logs
+
+USER nodejs
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
+CMD ["node", "dist/server.js"]
