@@ -27,10 +27,10 @@ const cspDirectives = {
   ...(isProd
     ? {}
     : {
-        "connect-src": ["'self'", "ws:", "http:", "https:"],
-        "worker-src": ["'self'", "blob:"],
-        "font-src": ["'self'", "data:"],
-      }),
+      "connect-src": ["'self'", "ws:", "http:", "https:"],
+      "worker-src": ["'self'", "blob:"],
+      "font-src": ["'self'", "data:"],
+    }),
 } as const;
 
 sharedApp.use(
@@ -38,7 +38,9 @@ sharedApp.use(
     contentSecurityPolicy: { directives: cspDirectives },
   }),
 );
-sharedApp.use(morgan('combined'));
+if (config.env !== "test") {
+  sharedApp.use(morgan('combined'));
+}
 sharedApp.use(express.json({ limit: "2mb" }));
 sharedApp.use(express.urlencoded({ extended: true, limit: "2mb" }));
 sharedApp.use(cookieParser())

@@ -3,6 +3,10 @@ import config from "../config";
 import ApiError from "../utils/ApiError";
 import { logger } from "../config/logger";
 
+function formatStack(stack: string, limit = 5) {
+  return stack.split('\n').slice(0, limit + 1).join('\n'); // +1 keeps the error message line
+}
+
 export const errorConverter = (
   err: any,
   _req: Request,
@@ -10,11 +14,12 @@ export const errorConverter = (
   next: NextFunction
 ) => {
   let error = err;
+  const formattedStack = formatStack(err.stack)
 
   if (!(err instanceof ApiError)) {
     const statusCode = err.statusCode || err.status || 500;
     const message = err.message || "Error"
-    error = new ApiError(statusCode, message, false, err.stack)
+    error = new ApiError(statusCode, message, false, formattedStack)
   }
 
   if (error.name === "ValidationError" && !error.statusCode) {
@@ -22,7 +27,7 @@ export const errorConverter = (
       422,
       error.message,
       true,
-      err.stack
+      formattedStack
     )
   }
 
@@ -37,14 +42,15 @@ export const errorHandler = (
 ) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
+  const formattedStack = formatStack(err.stack)
 
-  logger.error({ statusCode, message, stack: err.stack });
+  logger.error({ statusCode, message, stack: formattedStack });
 
   const payload = {
     status: "error",
     code: statusCode,
     message,
-    ...(config.env === "development" && { stack: err.stack })
+    ...(config.env === "development" && { stack: formattedStack })
   };
 
   res.status(statusCode).json(payload);
