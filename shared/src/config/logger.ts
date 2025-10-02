@@ -1,6 +1,7 @@
 import winston from "winston"
 import fs from "fs";
 import path from "path";
+import config from ".";
 
 const levels = {
   error: 0,
@@ -48,6 +49,7 @@ export const logger = winston.createLogger({
   format: jsonFormat,
   transports: [
     new winston.transports.Console({
+      silent: config.env === 'test',
       handleExceptions: true,
       format: devConsoleFormat
     }),

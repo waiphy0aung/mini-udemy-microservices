@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import envSchema from "./env.validation";
 
-dotenv.config({ path: ".env" });
+dotenv.config({ quiet: true });
 
 // const dbUsername = encodeURIComponent(process.env.POSTGRES_USER || "")
 // const dbPassword = encodeURIComponent(process.env.POSTGRES_PASSWORD || "")
