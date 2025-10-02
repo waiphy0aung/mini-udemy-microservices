@@ -2,8 +2,8 @@ import { Router } from "express"
 import * as authController from "../controllers/auth.controller"
 import { validate, rateLimit } from "@shared";
 import { loginSchema, registerSchema } from "../validations/auth.validation";
+import { forgotPasswordSchema, resetPasswordSchema } from "../validations/user.validation";
 import { auth } from "@shared";
-import { forgotPasswordSchema, resetPasswordSchema } from "src/validations/user.validation";
 
 const authRouter: Router = Router();
 

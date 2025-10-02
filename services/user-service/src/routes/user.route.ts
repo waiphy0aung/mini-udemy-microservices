@@ -2,7 +2,7 @@ import { Router } from "express";
 import type { Router as RouterType } from "express";
 import * as userController from "../controllers/user.controller"
 import { auth, cache, validate } from "@shared";
-import { changePasswordSchema, getInstructorsQuerySchema, getUsersQuerySchema, updateInstructorProfileSchema, updateProfileSchema } from "src/validations/user.validation";
+import { changePasswordSchema, getInstructorsQuerySchema, getUsersQuerySchema, updateInstructorProfileSchema, updateProfileSchema } from "../validations/user.validation";
 
 const userRouter: RouterType = Router()
 

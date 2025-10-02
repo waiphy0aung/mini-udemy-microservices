@@ -2,7 +2,7 @@ import { config, connectRedis, logger } from "@shared";
 import app from "./app";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 let shuttingDown = false;
 
