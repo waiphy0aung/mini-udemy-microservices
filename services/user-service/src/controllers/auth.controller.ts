@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client"
+import prisma from "../db/client"
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { catchAsync, logger } from "@shared";
@@ -8,7 +8,6 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from "@shared";
 import { tokenCookieOptions, refreshTokenCookieOptions } from "../utils/cookies";
 import { ApiError } from "@shared";
 
-const prisma = new PrismaClient();
 
 // Deterministic hash for refresh tokens (store only hashed values in DB)
 const hashRefreshToken = (token: string) =>
