@@ -11,7 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "@shared": ["../../shared/src"],
-      "@shared/*": ["../../shared/src/*"]
+      "@shared/*": ["../../shared/src/*"],
+      "@prisma/client": ["node_modules/.prisma/client"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

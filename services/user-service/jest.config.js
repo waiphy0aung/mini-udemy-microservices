@@ -17,6 +17,7 @@ module.exports = {
   moduleNameMapper: {
     '^@shared$': '<rootDir>/../../shared/src',
     '^@shared/(.*)$': '<rootDir>/../../shared/src/$1',
+    '^@prisma/client$': '<rootDir>/node_modules/.prisma/client',
     '^@/(.*)$': '<rootDir>/src/$1'
   },
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],

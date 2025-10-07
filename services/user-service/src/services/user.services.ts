@@ -1,11 +1,11 @@
-import { InstructorProfile, PrismaClient, User, UserProfile } from "@prisma/client"
+import { InstructorProfile, User, UserProfile } from "@prisma/client"
+import prisma from "../db/client";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { ChangePasswordRequest, RegisterRequest, UpdateInstructorProfileRequest, UpdateProfileRequest, UserWithRelations } from "../types";
 import { ApiError } from "@shared";
 import { parse } from "path";
 
-const prisma = new PrismaClient();
 
 export const createUser = async (payload: RegisterRequest): Promise<UserWithRelations> => {
   const { email, password, role, firstName, lastName } = payload;
