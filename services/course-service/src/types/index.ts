@@ -33,10 +33,6 @@ export interface CourseWithRelations extends Course {
   enrollments?: Enrollment[];
 }
 
-export interface SectionWithLessons extends Section {
-  lessons: Lesson[];
-}
-
 export interface CourseFilters {
   page?: number;
   limit?: number;
@@ -49,4 +45,22 @@ export interface CourseFilters {
   maxPrice?: number;
   tags?: string[];
   language?: string;
+}
+
+// Section Types
+export interface CreateSectionRequest {
+  courseId: number;
+  title: string;
+  description?: string;
+  order?: number;
+}
+
+export interface UpdateSectionRequest {
+  title?: string;
+  description?: string;
+  order?: number;
+}
+
+export interface SectionWithLessons extends Section {
+  lessons: Lesson[];
 }
