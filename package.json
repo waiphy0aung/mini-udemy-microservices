@@ -21,10 +21,9 @@
     "test": "pnpm --recursive run test",
     "test:user": "pnpm --filter user-service test",
     "clean": "pnpm --recursive run clean",
-    "db:generate": "pnpm --filter user-service db:generate",
-    "db:migrate": "pnpm --filter user-service db:migrate",
-    "db:studio": "pnpm --filter user-service db:studio",
-    "db:seed": "pnpm --filter user-service db:seed"
+    "db:generate": "pnpm --filter './services/*' db:generate",
+    "db:migrate": "pnpm --filter './services/*' db:migrate",
+    "db:seed": "pnpm --filter './services/*' db:seed"
   },
   "workspaces": [
     "shared",

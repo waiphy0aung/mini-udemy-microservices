@@ -1,7 +1,6 @@
-import { PrismaClient, Role } from '@prisma/client';
+import prisma from '../src/db/client';
+import { Role } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-
-const prisma = new PrismaClient();
 
 async function main() {
   const password = await bcrypt.hash('password123', 12);
@@ -69,4 +68,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
