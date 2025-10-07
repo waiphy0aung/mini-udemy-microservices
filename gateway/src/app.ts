@@ -8,12 +8,8 @@ import { services } from "./configs/services";
 
 const app: Express = sharedApp;
 
-// Log service mappings for debugging
-logger.info('Gateway service mappings:', services);
-
 // Register proxy routes
 for (const [route, target] of Object.entries(services)) {
-  logger.info(`Registering proxy: ${route} -> ${target}`);
   app.use(route, createProxyMiddleware(makeProxyOptions(target, route)));
 }
 

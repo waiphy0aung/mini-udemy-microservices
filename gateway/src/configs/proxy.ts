@@ -6,7 +6,7 @@ import { logger, config } from "@shared";
 export const makeProxyOptions = (targetBase: string, route: string): ProxyOptions => {
   const PROXY_TIMEOUT_MS = 10_000;
   const CLIENT_TIMEOUT_MS = 30_000;
-  const proxyLogLevel = (config.env === "production" ? "warn" : "debug") as Required<ProxyOptions>["logLevel"];
+  const proxyLogLevel = (config.env === "production" ? "silent" : "debug") as Required<ProxyOptions>["logLevel"];
 
   return {
     target: targetBase,

@@ -25,6 +25,11 @@
       "key": "userId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "courseId",
+      "value": "",
+      "type": "string"
     }
   ],
   "auth": {
@@ -631,6 +636,214 @@
       "description": "Administrative operations for user management"
     },
     {
+      "name": "📚 Courses",
+      "item": [
+        {
+          "name": "List Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses?page=1&limit=10&search=node&categoryId=1&instructorId=1&level=BEGINNER&minPrice=0&maxPrice=100&tags=node,typescript&language=en&status=PUBLISHED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "node", "disabled": true },
+                { "key": "categoryId", "value": "1", "disabled": true },
+                { "key": "instructorId", "value": "1", "disabled": true },
+                { "key": "level", "value": "BEGINNER", "disabled": true },
+                { "key": "minPrice", "value": "0", "disabled": true },
+                { "key": "maxPrice", "value": "100", "disabled": true },
+                { "key": "tags", "value": "node,typescript", "disabled": true },
+                { "key": "language", "value": "en", "disabled": true },
+                { "key": "status", "value": "PUBLISHED", "disabled": true }
+              ]
+            },
+            "description": "List published courses with filtering and pagination"
+          }
+        },
+        {
+          "name": "Get Course by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Get a course by numeric ID"
+          }
+        },
+        {
+          "name": "Get Course by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/complete-nodejs-developer-course",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "complete-nodejs-developer-course"
+              ]
+            },
+            "description": "Get a course by slug (sample from seed data)"
+          }
+        },
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete Node.js Developer Course\",\n  \"description\": \"Learn Node.js from scratch and build production-ready APIs\",\n  \"price\": 49.99,\n  \"currency\": \"USD\",\n  \"categoryId\": 1,\n  \"level\": \"BEGINNER\",\n  \"language\": \"en\",\n  \"tags\": [\"node\", \"javascript\", \"backend\"],\n  \"requirements\": [\"Basic JavaScript\"],\n  \"objectives\": [\"Build REST APIs\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses"
+              ]
+            },
+            "description": "Create a new course (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Get My Courses (Instructor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/instructor/my-courses?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "instructor",
+                "my-courses"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List courses created by the authenticated instructor"
+          }
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Node.js Course Title\",\n  \"price\": 59.99,\n  \"language\": \"en\",\n  \"tags\": [\"node\", \"typescript\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Update a course you own (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Delete a course you own (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Publish Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "publish"
+              ]
+            },
+            "description": "Publish a course (requires at least one section with lessons)"
+          }
+        },
+        {
+          "name": "Archive Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/archive",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "archive"
+              ]
+            },
+            "description": "Archive a course you own"
+          }
+        }
+      ],
+      "description": "Course management and discovery endpoints"
+    },
+    {
       "name": "🏥 Health & Utility",
       "item": [
         {
@@ -685,6 +898,26 @@
               ]
             },
             "description": "Direct health check of User Service"
+          }
+        }
+        ,
+        {
+          "name": "Course Service Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Direct health check of Course Service"
           }
         }
       ],
