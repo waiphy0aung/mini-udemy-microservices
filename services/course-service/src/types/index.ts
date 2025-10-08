@@ -1,4 +1,4 @@
-import { Category, Course, CourseStatus, Enrollment, Lesson, Section } from "@prisma/client"
+import { Category, Course, CourseStatus, Enrollment, Lesson, LessonType, Section } from "@prisma/client"
 import { CourseLevel } from "@shared/types";
 
 export interface CreateCourseRequest {
@@ -63,4 +63,26 @@ export interface UpdateSectionRequest {
 
 export interface SectionWithLessons extends Section {
   lessons: Lesson[];
+}
+
+// Lesson Types
+export interface CreateLessonRequest {
+  sectionId: number;
+  title: string;
+  description?: string;
+  type?: LessonType;
+  content?: string;
+  duration?: number;
+  order?: number;
+  isFree?: boolean;
+}
+
+export interface UpdateLessonRequest {
+  title?: string;
+  description?: string;
+  type?: LessonType;
+  content?: string;
+  duration?: number;
+  order?: number;
+  isFree?: boolean;
 }

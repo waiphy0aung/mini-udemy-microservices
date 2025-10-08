@@ -128,5 +128,9 @@ export const reorderSections = async (
     data: { order: index }
   }))
 
-  await prisma.$transaction(updates)
+  try {
+    await prisma.$transaction(updates);
+  } catch (err: any) {
+    throw new ApiError(400, "Something went wrong", false, err.stack)
+  }
 }
