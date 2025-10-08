@@ -17,7 +17,12 @@ export const createSection = async (
   }
 
   let order = data.order;
-  if (order === undefined) {
+
+  const isOrderExist = await prisma.section.findFirst({
+    where: { order, courseId: data.courseId }
+  })
+
+  if (order === undefined || isOrderExist) {
     const maxOrder = await prisma.section.aggregate({
       where: { courseId: data.courseId },
       _max: { order: true }

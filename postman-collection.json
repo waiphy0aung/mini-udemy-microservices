@@ -30,6 +30,11 @@
       "key": "courseId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "sectionId",
+      "value": "",
+      "type": "string"
     }
   ],
   "auth": {
@@ -842,6 +847,130 @@
         }
       ],
       "description": "Course management and discovery endpoints"
+    },
+    {
+      "name": "🧩 Sections",
+      "item": [
+        {
+          "name": "List Course Sections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/sections",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "sections"
+              ]
+            },
+            "description": "Get all sections for a course ordered by 'order'. Includes lessons."
+          }
+        },
+        {
+          "name": "Create Section",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}},\n  \"title\": \"Getting Started\",\n  \"description\": \"Introduction and setup\",\n  \"order\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections"
+              ]
+            },
+            "description": "Create a new section in a course (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Update Section",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Section Title\",\n  \"description\": \"Revised overview\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections/{{sectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections",
+                "{{sectionId}}"
+              ]
+            },
+            "description": "Update a section by ID (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Delete Section",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections/{{sectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections",
+                "{{sectionId}}"
+              ]
+            },
+            "description": "Delete a section by ID (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Reorder Sections",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionIds\": [3, 1, 2]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/sections/reorder",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "sections",
+                "reorder"
+              ]
+            },
+            "description": "Reorder sections in a course by passing an ordered array of section IDs (Instructor/Admin only)"
+          }
+        }
+      ],
+      "description": "Section management endpoints (under Courses)"
     },
     {
       "name": "🏥 Health & Utility",
