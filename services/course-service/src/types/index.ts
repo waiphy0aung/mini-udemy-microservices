@@ -86,3 +86,31 @@ export interface UpdateLessonRequest {
   order?: number;
   isFree?: boolean;
 }
+
+// Category Types
+export interface CreateCategoryRequest {
+  name: string;
+  description?: string;
+  icon?: string;
+  parentId?: number;
+}
+
+export interface UpdateCategoryRequest {
+  name?: string;
+  description?: string;
+  icon?: string;
+  parentId?: number;
+}
+
+export interface CategoryWithRelations extends Category {
+  parent: Category | null;
+  children: Category[];
+  courses?: Course[];
+}
+
+export interface CategoryFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  parentId?: number;
+}
