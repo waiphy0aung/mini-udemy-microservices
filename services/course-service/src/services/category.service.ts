@@ -98,7 +98,7 @@ export const getCategoryBySlug = async (slug: string): Promise<CategoryWithRelat
 }
 
 export const getAllCategories = async (filters: CategoryFilters) => {
-  const { page = 1, limit = 10, search, parentId } = filters;
+  const { page = 1, limit = 50, search, parentId } = filters;
   const skip = (page - 1) * limit;
 
   const where: any = {}
@@ -123,7 +123,10 @@ export const getAllCategories = async (filters: CategoryFilters) => {
         _count: {
           select: { courses: true }
         }
-      }
+      },
+      skip,
+      take: limit,
+      orderBy: { name: "asc" }
     }),
     prisma.category.count({ where })
   ])
