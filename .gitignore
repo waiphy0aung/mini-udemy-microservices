@@ -18,6 +18,7 @@ temp/
 .cache/
 .parcel-cache/
 .eslintcache
+*.tsbuildinfo
 
 # --- Logs ---
 logs/

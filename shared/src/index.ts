@@ -19,6 +19,7 @@ export * from './utils/cors';
 export { default as ApiError } from './utils/ApiError';
 export { default as catchAsync } from './utils/catchAsync';
 export * from './utils/cache';
+export * from './utils/slug';
 
 // config
 export { default as config } from './config';

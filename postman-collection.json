@@ -25,6 +25,36 @@
       "key": "userId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "courseId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "sectionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "lessonId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "enrollmentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categorySlug",
+      "value": "web-development",
+      "type": "string"
     }
   ],
   "auth": {
@@ -120,7 +150,25 @@
               ]
             },
             "description": "Login with email and password to get access token"
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const token = json && json.data && json.data.token;",
+                  "  if (token) { pm.collectionVariables.set('accessToken', token); }",
+                  "  const rt = pm.cookies.get('refreshToken');",
+                  "  if (rt) { pm.collectionVariables.set('refreshToken', rt); }",
+                  "  pm.test('Saved access token variable', function () { pm.expect(pm.collectionVariables.get('accessToken')).to.be.a('string'); });",
+                  "} catch (e) { /* ignore */ }"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Login Admin (Seeded)",
@@ -147,7 +195,70 @@
               ]
             },
             "description": "Login as seeded admin user"
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const token = json && json.data && json.data.token;",
+                  "  if (token) { pm.collectionVariables.set('accessToken', token); }",
+                  "  const rt = pm.cookies.get('refreshToken');",
+                  "  if (rt) { pm.collectionVariables.set('refreshToken', rt); }",
+                  "  pm.test('Saved access token variable', function () { pm.expect(pm.collectionVariables.get('accessToken')).to.be.a('string'); });",
+                  "} catch (e) { /* ignore */ }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Instructor (Seeded)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"instructor@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login as seeded instructor user"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const token = json && json.data && json.data.token;",
+                  "  if (token) { pm.collectionVariables.set('accessToken', token); }",
+                  "  const rt = pm.cookies.get('refreshToken');",
+                  "  if (rt) { pm.collectionVariables.set('refreshToken', rt); }",
+                  "  pm.test('Saved access token variable', function () { pm.expect(pm.collectionVariables.get('accessToken')).to.be.a('string'); });",
+                  "} catch (e) { /* ignore */ }"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Refresh Token",
@@ -631,6 +742,836 @@
       "description": "Administrative operations for user management"
     },
     {
+      "name": "📚 Courses",
+      "item": [
+        {
+          "name": "List Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses?page=1&limit=10&search=node&categoryId=1&instructorId=1&level=BEGINNER&minPrice=0&maxPrice=100&tags=node,typescript&language=en&status=PUBLISHED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "node", "disabled": true },
+                { "key": "categoryId", "value": "1", "disabled": true },
+                { "key": "instructorId", "value": "1", "disabled": true },
+                { "key": "level", "value": "BEGINNER", "disabled": true },
+                { "key": "minPrice", "value": "0", "disabled": true },
+                { "key": "maxPrice", "value": "100", "disabled": true },
+                { "key": "tags", "value": "node,typescript", "disabled": true },
+                { "key": "language", "value": "en", "disabled": true },
+                { "key": "status", "value": "PUBLISHED", "disabled": true }
+              ]
+            },
+            "description": "List published courses with filtering and pagination"
+          }
+        },
+        {
+          "name": "Get Course by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Get a course by numeric ID"
+          }
+        },
+        {
+          "name": "Get Course by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/complete-nodejs-developer-course",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "complete-nodejs-developer-course"
+              ]
+            },
+            "description": "Get a course by slug (sample from seed data)"
+          }
+        },
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete Node.js Developer Course\",\n  \"description\": \"Learn Node.js from scratch and build production-ready APIs\",\n  \"price\": 49.99,\n  \"currency\": \"USD\",\n  \"categoryId\": 1,\n  \"level\": \"BEGINNER\",\n  \"language\": \"en\",\n  \"tags\": [\"node\", \"javascript\", \"backend\"],\n  \"requirements\": [\"Basic JavaScript\"],\n  \"objectives\": [\"Build REST APIs\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses"
+              ]
+            },
+            "description": "Create a new course (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Get My Courses (Instructor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/instructor/my-courses?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "instructor",
+                "my-courses"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List courses created by the authenticated instructor"
+          }
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Node.js Course Title\",\n  \"price\": 59.99,\n  \"language\": \"en\",\n  \"tags\": [\"node\", \"typescript\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Update a course you own (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Delete a course you own (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Publish Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "publish"
+              ]
+            },
+            "description": "Publish a course (requires at least one section with lessons)"
+          }
+        },
+        {
+          "name": "Archive Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/archive",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "archive"
+              ]
+            },
+            "description": "Archive a course you own"
+          }
+        }
+      ],
+      "description": "Course management and discovery endpoints"
+    },
+    {
+      "name": "🧩 Sections",
+      "item": [
+        {
+          "name": "List Course Sections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/sections",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "sections"
+              ]
+            },
+            "description": "Get all sections for a course ordered by 'order'. Includes lessons."
+          }
+        },
+        {
+          "name": "Create Section",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}},\n  \"title\": \"Getting Started\",\n  \"description\": \"Introduction and setup\",\n  \"order\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections"
+              ]
+            },
+            "description": "Create a new section in a course (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Update Section",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Section Title\",\n  \"description\": \"Revised overview\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections/{{sectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections",
+                "{{sectionId}}"
+              ]
+            },
+            "description": "Update a section by ID (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Delete Section",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections/{{sectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections",
+                "{{sectionId}}"
+              ]
+            },
+            "description": "Delete a section by ID (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Reorder Sections",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionIds\": [3, 1, 2]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/sections/reorder",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "sections",
+                "reorder"
+              ]
+            },
+            "description": "Reorder sections in a course by passing an ordered array of section IDs (Instructor/Admin only)"
+          }
+        }
+      ],
+      "description": "Section management endpoints (under Courses)"
+    },
+    {
+      "name": "🎓 Lessons",
+      "item": [
+        {
+          "name": "Get Lesson by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/lessons/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "lessons",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "Get a lesson by its ID"
+          }
+        },
+        {
+          "name": "Create Lesson",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionId\": {{sectionId}},\n  \"title\": \"Introduction Video\",\n  \"description\": \"Course overview and goals\",\n  \"type\": \"VIDEO\",\n  \"content\": \"https://example.com/videos/intro.mp4\",\n  \"duration\": 300,\n  \"order\": 0,\n  \"isFree\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/lessons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "lessons"
+              ]
+            },
+            "description": "Create a new lesson (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Update Lesson",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Intro\",\n  \"description\": \"Refined overview\",\n  \"type\": \"VIDEO\",\n  \"content\": \"https://example.com/videos/intro-v2.mp4\",\n  \"duration\": 360,\n  \"order\": 1,\n  \"isFree\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/lessons/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "lessons",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "Update a lesson by ID (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Delete Lesson",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/lessons/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "lessons",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "Delete a lesson by ID (Instructor/Admin only)"
+          }
+        },
+        {
+          "name": "Reorder Lessons in Section",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lessonIds\": [10, 8, 9]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections/{{sectionId}}/lessons/reorder",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections",
+                "{{sectionId}}",
+                "lessons",
+                "reorder"
+              ]
+            },
+            "description": "Reorder lessons within a section (Instructor/Admin only)"
+          }
+        }
+      ],
+      "description": "Lesson management endpoints (under Courses)"
+    },
+    {
+      "name": "🗂 Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/categories?page=1&limit=50&search=web&parentId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "categories"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "50" },
+                { "key": "search", "value": "web", "disabled": true },
+                { "key": "parentId", "value": "1", "disabled": true }
+              ]
+            },
+            "description": "List categories with optional filtering and pagination"
+          }
+        },
+        {
+          "name": "Get Root Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/categories/root",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "categories",
+                "root"
+              ]
+            },
+            "description": "Get top-level categories (no parent)"
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "categories",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Get a category by numeric ID"
+          }
+        },
+        {
+          "name": "Get Category by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/categories/{{categorySlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "categories",
+                "{{categorySlug}}"
+              ]
+            },
+            "description": "Get a category by slug (seed example: web-development)"
+          }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Programming\",\n  \"description\": \"All programming related topics\",\n  \"icon\": \"💻\",\n  \"parentId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "categories"
+              ]
+            },
+            "description": "Create a category (Admin only)"
+          }
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Programming & Dev\",\n  \"description\": \"Updated description\",\n  \"icon\": \"🛠\",\n  \"parentId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "categories",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Update a category (Admin only)"
+          }
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "categories",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Delete a category by ID (Admin only). Cannot delete categories with children or courses."
+          }
+        }
+      ],
+      "description": "Category management endpoints"
+    },
+    {
+      "name": "🎓 Enrollments",
+      "item": [
+        {
+          "name": "Create Enrollment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments"
+              ]
+            },
+            "description": "Enroll current authenticated user in a course"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const id = json && json.data && json.data.enrollment && json.data.enrollment.id;",
+                  "  if (id) { pm.collectionVariables.set('enrollmentId', id); }",
+                  "  pm.test('Saved enrollmentId variable', function () { pm.expect(pm.collectionVariables.get('enrollmentId')).to.exist; });",
+                  "  pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "} catch (e) { /* ignore */ }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/me?page=1&limit=10&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "me"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "ACTIVE", "disabled": true }
+              ]
+            },
+            "description": "List current user's enrollments with pagination"
+          }
+        },
+        {
+          "name": "Get My Active Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/me/active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "me",
+                "active"
+              ]
+            },
+            "description": "List active enrollments for the current user"
+          }
+        },
+        {
+          "name": "Check Enrollment For Course",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/enrollment/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "enrollment",
+                "check"
+              ]
+            },
+            "description": "Check if current user is enrolled in the given course"
+          }
+        },
+        {
+          "name": "Get Enrollment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/{{enrollmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "{{enrollmentId}}"
+              ]
+            },
+            "description": "Get a specific enrollment by its ID"
+          }
+        },
+        {
+          "name": "Update Enrollment Progress",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"progress\": 50,\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/{{enrollmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "{{enrollmentId}}"
+              ]
+            },
+            "description": "Update progress or status of an enrollment"
+          }
+        },
+        {
+          "name": "Drop Enrollment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/{{enrollmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "{{enrollmentId}}"
+              ]
+            },
+            "description": "Drop (deactivate) an enrollment for the current user"
+          }
+        },
+        {
+          "name": "Admin: Get All Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/admin/enrollments?page=1&limit=10&userId=1&courseId=1&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "admin",
+                "enrollments"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "userId", "value": "1", "disabled": true },
+                { "key": "courseId", "value": "1", "disabled": true },
+                { "key": "status", "value": "ACTIVE", "disabled": true }
+              ]
+            },
+            "description": "List all enrollments with filters (Admin only)"
+          }
+        }
+      ],
+      "description": "Enrollment management endpoints (under Courses)"
+    },
+    {
       "name": "🏥 Health & Utility",
       "item": [
         {
@@ -685,6 +1626,26 @@
               ]
             },
             "description": "Direct health check of User Service"
+          }
+        }
+        ,
+        {
+          "name": "Course Service Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Direct health check of Course Service"
           }
         }
       ],
