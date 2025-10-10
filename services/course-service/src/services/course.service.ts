@@ -1,6 +1,6 @@
 import prisma from "../db/client";
 import { ApiError, generateSlug } from "@shared";
-import { CourseFilters, CourseWithRelations, CreateCourseRequest, UpdateCourseRequest } from "src/types";
+import { CourseFilters, CourseWithRelations, CreateCourseRequest, SectionWithLessons, UpdateCourseRequest } from "src/types";
 
 
 const ensureUniqueSlug = async (baseSlug: string, excludeId?: number): Promise<string> => {
@@ -238,8 +238,8 @@ export const calculateCourseDuration = async (courseId: number): Promise<number>
     include: { lessons: true }
   })
 
-  const totalDuration = sections.reduce((acc, section) => {
-    const sectionDuration = section.lessons.reduce((sum, lesson) => sum + lesson.duration, 0);
+  const totalDuration = sections.reduce((acc: number, section: SectionWithLessons) => {
+    const sectionDuration = section.lessons.reduce((sum: number, lesson) => sum + lesson.duration, 0);
     return acc + sectionDuration
   }, 0)
 

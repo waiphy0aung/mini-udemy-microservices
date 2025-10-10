@@ -1,3 +1,4 @@
+import { EnrollmentStatus } from "@prisma/client";
 import { Category, Course, CourseStatus, Enrollment, Lesson, LessonType, Section } from "@prisma/client"
 import { CourseLevel } from "@shared/types";
 
@@ -113,4 +114,24 @@ export interface CategoryFilters {
   limit?: number;
   search?: string;
   parentId?: number;
+}
+
+// Enrollment Types
+export interface CreateEnrollmentRequest {
+  userId: number;
+  courseId: number;
+}
+
+export interface UpdateEnrollmentRequest {
+  progress?: number;
+  status?: EnrollmentStatus;
+  lastAccessedAt?: Date;
+}
+
+export interface EnrollmentFilters {
+  page?: number;
+  limit?: number;
+  userId?: number;
+  courseId?: number;
+  status?: EnrollmentStatus;
 }

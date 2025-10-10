@@ -42,6 +42,11 @@
       "type": "string"
     },
     {
+      "key": "enrollmentId",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "categoryId",
       "value": "",
       "type": "string"
@@ -1351,6 +1356,220 @@
         }
       ],
       "description": "Category management endpoints"
+    },
+    {
+      "name": "🎓 Enrollments",
+      "item": [
+        {
+          "name": "Create Enrollment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments"
+              ]
+            },
+            "description": "Enroll current authenticated user in a course"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const id = json && json.data && json.data.enrollment && json.data.enrollment.id;",
+                  "  if (id) { pm.collectionVariables.set('enrollmentId', id); }",
+                  "  pm.test('Saved enrollmentId variable', function () { pm.expect(pm.collectionVariables.get('enrollmentId')).to.exist; });",
+                  "  pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "} catch (e) { /* ignore */ }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/me?page=1&limit=10&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "me"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "ACTIVE", "disabled": true }
+              ]
+            },
+            "description": "List current user's enrollments with pagination"
+          }
+        },
+        {
+          "name": "Get My Active Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/me/active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "me",
+                "active"
+              ]
+            },
+            "description": "List active enrollments for the current user"
+          }
+        },
+        {
+          "name": "Check Enrollment For Course",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/{{courseId}}/enrollment/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "{{courseId}}",
+                "enrollment",
+                "check"
+              ]
+            },
+            "description": "Check if current user is enrolled in the given course"
+          }
+        },
+        {
+          "name": "Get Enrollment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/{{enrollmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "{{enrollmentId}}"
+              ]
+            },
+            "description": "Get a specific enrollment by its ID"
+          }
+        },
+        {
+          "name": "Update Enrollment Progress",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"progress\": 50,\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/{{enrollmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "{{enrollmentId}}"
+              ]
+            },
+            "description": "Update progress or status of an enrollment"
+          }
+        },
+        {
+          "name": "Drop Enrollment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/enrollments/{{enrollmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "enrollments",
+                "{{enrollmentId}}"
+              ]
+            },
+            "description": "Drop (deactivate) an enrollment for the current user"
+          }
+        },
+        {
+          "name": "Admin: Get All Enrollments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses/admin/enrollments?page=1&limit=10&userId=1&courseId=1&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "admin",
+                "enrollments"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "userId", "value": "1", "disabled": true },
+                { "key": "courseId", "value": "1", "disabled": true },
+                { "key": "status", "value": "ACTIVE", "disabled": true }
+              ]
+            },
+            "description": "List all enrollments with filters (Admin only)"
+          }
+        }
+      ],
+      "description": "Enrollment management endpoints (under Courses)"
     },
     {
       "name": "🏥 Health & Utility",

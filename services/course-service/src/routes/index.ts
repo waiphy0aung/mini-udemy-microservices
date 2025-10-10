@@ -4,6 +4,7 @@ import courseRouter from "./course.route";
 import sectionRouter from "./section.route";
 import lessonRouter from "./lesson.route";
 import categoryRouter from "./category.route";
+import enrollmentRouter from "./enrollment.route";
 
 const router: RouterType = Router();
 
@@ -12,7 +13,8 @@ router.use(
   categoryRouter,
   courseRouter,
   sectionRouter,
-  lessonRouter
+  lessonRouter,
+  enrollmentRouter
 )
 
 export default router;
