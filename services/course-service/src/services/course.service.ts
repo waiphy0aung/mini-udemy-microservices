@@ -156,8 +156,9 @@ export const updateCourse = async (
   id: number,
   instructorId: number,
   data: UpdateCourseRequest
-): Promise<CourseWithRelations> => {
+): Promise<{ updated: CourseWithRelations, oldSlug: string }> => {
   const course = await validateAndGetCourse(id, instructorId)
+  const oldSlug = course.slug
 
   const updateData: any = { ...data }
 
@@ -178,13 +179,13 @@ export const updateCourse = async (
     }
   })
 
-  return updated;
+  return { updated, oldSlug };
 }
 
-export const deleteCourse = async (id: number, instructorId: number): Promise<void> => {
-  await validateAndGetCourse(id, instructorId)
-
+export const deleteCourse = async (id: number, instructorId: number): Promise<CourseWithRelations> => {
+  const course = await validateAndGetCourse(id, instructorId)
   await prisma.course.delete({ where: { id } });
+  return course;
 }
 
 export const publishCourse = async (id: number, instructorId: number): Promise<CourseWithRelations> => {

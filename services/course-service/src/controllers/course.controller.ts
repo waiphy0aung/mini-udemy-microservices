@@ -1,11 +1,26 @@
 import type { Request, Response } from "express";
 import catchAsync from "@shared/utils/catchAsync";
 import * as courseService from "../services/course.service"
-import { ApiError } from "@shared";
+import { ApiError, delByPrefix } from "@shared";
+
+const clearCourseCaches = async (courseId?: number, courseSlug?: string) => {
+  const tasks: Promise<any>[] = [];
+
+  if (courseId) {
+    tasks.push(delByPrefix(`courses:detail:/${courseId}`));
+    tasks.push(delByPrefix(`sections:list:/${courseId}`));
+  }
+  if (courseSlug) tasks.push(delByPrefix(`courses:detail:/${courseSlug}`));
+
+  tasks.push(delByPrefix("courses:list"))
+
+  await Promise.allSettled(tasks)
+}
 
 export const createCourse = catchAsync(async (req: Request, res: Response) => {
   const instructorId = req.user!.id;
   const course = await courseService.createCourse(instructorId, req.body);
+  await clearCourseCaches()
   return res.success({ course }, "Course created", 201);
 })
 
@@ -66,14 +81,18 @@ export const getInstructorCourses = catchAsync(async (req: Request, res: Respons
 export const updateCourse = catchAsync(async (req: Request, res: Response) => {
   const courseId = parseInt(req.params.id);
   const instructorId = req.user!.id;
-  const course = await courseService.updateCourse(courseId, instructorId, req.body)
-  return res.success({ course }, "Course updated")
+  const { updated, oldSlug } = await courseService.updateCourse(courseId, instructorId, req.body)
+
+  await clearCourseCaches(updated.id, oldSlug)
+
+  return res.success({ course: updated }, "Course updated")
 })
 
 export const deleteCourse = catchAsync(async (req: Request, res: Response) => {
   const courseId = parseInt(req.params.id);
   const instructorId = req.user!.id;
-  await courseService.deleteCourse(courseId, instructorId);
+  const course = await courseService.deleteCourse(courseId, instructorId);
+  await clearCourseCaches(course.id, course.slug)
   return res.success(null, "Course deleted");
 })
 
@@ -81,6 +100,7 @@ export const publishCourse = catchAsync(async (req: Request, res: Response) => {
   const courseId = parseInt(req.params.id);
   const instructorId = req.user!.id;
   const course = await courseService.publishCourse(courseId, instructorId);
+  await clearCourseCaches(course.id, course.slug)
   return res.success({ course }, "Course published");
 })
 
@@ -88,5 +108,6 @@ export const archiveCourse = catchAsync(async (req: Request, res: Response) => {
   const courseId = parseInt(req.params.id);
   const instructorId = req.user!.id;
   const course = await courseService.archiveCourse(courseId, instructorId);
+  await clearCourseCaches(course.id, course.slug)
   return res.success({ course }, "Course archived");
 })
