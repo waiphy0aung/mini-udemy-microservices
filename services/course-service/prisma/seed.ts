@@ -1,7 +1,5 @@
 import prisma from '../src/db/client';
 
-const prisma = new PrismaClient();
-
 async function main() {
   console.log('Seeding course service database...');
 
