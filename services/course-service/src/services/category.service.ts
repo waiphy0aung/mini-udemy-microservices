@@ -142,9 +142,10 @@ export const getAllCategories = async (filters: CategoryFilters) => {
   }
 }
 
-export const updateCategory = async (id: number, data: UpdateCategoryRequest): Promise<CategoryWithRelations> => {
+export const updateCategory = async (id: number, data: UpdateCategoryRequest): Promise<{ updated: CategoryWithRelations, oldSlug: string }> => {
   const category = await prisma.category.findUnique({ where: { id } });
   if (!category) throw ApiError.notFound("Category not found");
+  const oldSlug = category.slug
 
   if (data.parentId) {
     if (data.parentId === id) {
@@ -173,7 +174,7 @@ export const updateCategory = async (id: number, data: UpdateCategoryRequest): P
     }
   })
 
-  return updated
+  return { updated, oldSlug }
 }
 
 export const deleteCategory = async (id: number): Promise<void> => {

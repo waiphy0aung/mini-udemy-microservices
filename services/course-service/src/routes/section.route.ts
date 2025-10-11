@@ -12,6 +12,12 @@ sectionRouter.get(
   sectionController.getCourseSections
 )
 
+sectionRouter.get(
+  "/sections/:id",
+  cache({ prefix: "sections:detail", ttl: 300 }),
+  sectionController.getSectionById
+);
+
 sectionRouter.post(
   "/sections",
   auth(["INSTRUCTOR", "ADMIN"]),
