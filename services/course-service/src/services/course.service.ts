@@ -1,6 +1,6 @@
 import prisma from "../db/client";
 import { ApiError, generateSlug } from "@shared";
-import { CourseFilters, CourseWithRelations, CreateCourseRequest, SectionWithLessons, UpdateCourseRequest } from "src/types";
+import { CourseFilters, CourseWithRelations, CreateCourseRequest, SectionWithLessons, UpdateCourseRequest } from "../types";
 
 
 const ensureUniqueSlug = async (baseSlug: string, excludeId?: number): Promise<string> => {
@@ -8,7 +8,7 @@ const ensureUniqueSlug = async (baseSlug: string, excludeId?: number): Promise<s
   let counter = 1;
 
   while (true) {
-    const existing = await prisma.course.findUnique({
+    const existing = await prisma.course.findFirst({
       where: { slug },
       select: { id: true }
     });

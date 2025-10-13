@@ -11,8 +11,16 @@ type PrismaClient = InstanceType<typeof PrismaPkg.PrismaClient>;
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
+const resolveDbUrl = () =>
+  process.env.DATABASE_URL || process.env.COURSE_DATABASE_URL || undefined;
+
 const prisma = (globalForPrisma.prisma ?? new PrismaPkg.PrismaClient({
   log: process.env.NODE_ENV === "production" ? ["error"] : ["error", "warn"],
+  datasources: {
+    db: {
+      url: resolveDbUrl(),
+    },
+  },
 })) as PrismaClient;
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

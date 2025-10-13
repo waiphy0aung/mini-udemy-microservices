@@ -1,6 +1,6 @@
 import ApiError from "@shared/utils/ApiError";
-import prisma from "src/db/client";
-import { CreateLessonRequest, UpdateLessonRequest } from "src/types";
+import prisma from "../db/client";
+import { CreateLessonRequest, UpdateLessonRequest } from "../types";
 import { calculateCourseDuration } from "./course.service";
 import { Lesson } from "@prisma/client";
 

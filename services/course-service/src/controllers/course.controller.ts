@@ -34,7 +34,7 @@ export const getAllCourses = catchAsync(async (req: Request, res: Response) => {
     level: req.query.level as any,
     status: "PUBLISHED" as any,
     minPrice: req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined,
-    maxPrice: req.query.minPrice ? parseFloat(req.query.maxPrice as string) : undefined,
+    maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
     tags: req.query.tags ? (req.query.tags as string).split(",") : undefined,
     language: req.query.language as string
   }
@@ -69,7 +69,7 @@ export const getInstructorCourses = catchAsync(async (req: Request, res: Respons
     level: req.query.level as any,
     status: "PUBLISHED" as any,
     minPrice: req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined,
-    maxPrice: req.query.minPrice ? parseFloat(req.query.maxPrice as string) : undefined,
+    maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
     tags: req.query.tags ? (req.query.tags as string).split(",") : undefined,
     language: req.query.language as string
   }

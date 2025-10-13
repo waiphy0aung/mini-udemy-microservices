@@ -1,8 +1,8 @@
 import ApiError from "@shared/utils/ApiError";
 import { generateSlug } from "@shared/utils/slug";
-import prisma from "src/db/client";
+import prisma from "../db/client";
 import { Category } from "@prisma/client"
-import { CategoryFilters, CategoryWithRelations, CreateCategoryRequest, UpdateCategoryRequest } from "src/types";
+import { CategoryFilters, CategoryWithRelations, CreateCategoryRequest, UpdateCategoryRequest } from "../types";
 
 const ensureUniqueSlug = async (baseSlug: string, excluded?: number): Promise<string> => {
   let slug = baseSlug;

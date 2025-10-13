@@ -54,7 +54,11 @@ const validate = (schema: SchemaShape) => (req: Request, _res: Response, next: N
     }
 
     // assign the sanitized value back to the request
-    (req as any)[key] = value;
+    if (key === 'query' || key === 'params' || key === 'headers') {
+      Object.assign((req as any)[key] || {}, value);
+    } else {
+      (req as any)[key] = value;
+    }
   }
 
   if (errors.length) return next(ApiError.badRequest(errors.join(", ")));

@@ -1,6 +1,6 @@
 import { ApiError } from "@shared";
-import prisma from "src/db/client";
-import { CreateSectionRequest, SectionWithLessons, UpdateSectionRequest } from "src/types";
+import prisma from "../db/client";
+import { CreateSectionRequest, SectionWithLessons, UpdateSectionRequest } from "../types";
 
 export const createSection = async (
   instructorId: number,

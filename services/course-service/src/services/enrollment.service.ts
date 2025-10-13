@@ -1,5 +1,5 @@
-import prisma from "src/db/client";
-import { CreateEnrollmentRequest, EnrollmentFilters, UpdateEnrollmentRequest } from "src/types";
+import prisma from "../db/client";
+import { CreateEnrollmentRequest, EnrollmentFilters, UpdateEnrollmentRequest } from "../types";
 import { ApiError } from "@shared"
 import { Enrollment } from "@prisma/client";
 

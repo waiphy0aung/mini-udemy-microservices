@@ -972,6 +972,25 @@
           }
         },
         {
+          "name": "Get Section by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections/{{sectionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections",
+                "{{sectionId}}"
+              ]
+            },
+            "description": "Get a section by ID"
+          }
+        },
+        {
           "name": "Create Section",
           "request": {
             "method": "POST",
@@ -1093,6 +1112,26 @@
               ]
             },
             "description": "Get a lesson by its ID"
+          }
+        },
+        {
+          "name": "List Lessons in Section",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courses/sections/{{sectionId}}/lessons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "courses",
+                "sections",
+                "{{sectionId}}",
+                "lessons"
+              ]
+            },
+            "description": "List lessons for a section ordered by 'order'"
           }
         },
         {
