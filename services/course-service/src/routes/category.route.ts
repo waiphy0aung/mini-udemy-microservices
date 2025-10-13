@@ -15,7 +15,7 @@ categoryRouter.get(
 
 categoryRouter.get(
   "/categories/root",
-  cache({ prefix: "categories: root", ttl: 600 }),
+  cache({ prefix: "categories:root", ttl: 600 }),
   categoryController.getRootCategories
 )
 

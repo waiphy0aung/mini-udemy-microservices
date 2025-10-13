@@ -1,6 +1,6 @@
 import prisma from "../db/client";
 import { ApiError, generateSlug } from "@shared";
-import { CourseFilters, CourseWithRelations, CreateCourseRequest, SectionWithLessons, UpdateCourseRequest } from "src/types";
+import { CourseFilters, CourseWithRelations, CreateCourseRequest, SectionWithLessons, UpdateCourseRequest } from "../types";
 
 
 const ensureUniqueSlug = async (baseSlug: string, excludeId?: number): Promise<string> => {
@@ -8,7 +8,7 @@ const ensureUniqueSlug = async (baseSlug: string, excludeId?: number): Promise<s
   let counter = 1;
 
   while (true) {
-    const existing = await prisma.course.findUnique({
+    const existing = await prisma.course.findFirst({
       where: { slug },
       select: { id: true }
     });
@@ -156,8 +156,9 @@ export const updateCourse = async (
   id: number,
   instructorId: number,
   data: UpdateCourseRequest
-): Promise<CourseWithRelations> => {
+): Promise<{ updated: CourseWithRelations, oldSlug: string }> => {
   const course = await validateAndGetCourse(id, instructorId)
+  const oldSlug = course.slug
 
   const updateData: any = { ...data }
 
@@ -178,13 +179,13 @@ export const updateCourse = async (
     }
   })
 
-  return updated;
+  return { updated, oldSlug };
 }
 
-export const deleteCourse = async (id: number, instructorId: number): Promise<void> => {
-  await validateAndGetCourse(id, instructorId)
-
+export const deleteCourse = async (id: number, instructorId: number): Promise<CourseWithRelations> => {
+  const course = await validateAndGetCourse(id, instructorId)
   await prisma.course.delete({ where: { id } });
+  return course;
 }
 
 export const publishCourse = async (id: number, instructorId: number): Promise<CourseWithRelations> => {

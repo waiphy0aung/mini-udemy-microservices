@@ -16,14 +16,22 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "jest --selectProjects integration --runInBand",
+    "test:watch": "jest --watch --selectProjects unit",
+    "test:watch:integration": "jest --watch --selectProjects integration --runInBand",
+    "test:coverage": "jest --coverage",
+    "test:coverage:unit": "jest --selectProjects unit --coverage",
+    "test:coverage:integration": "jest --selectProjects integration --coverage --runInBand",
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "test:verbose": "jest --verbose"
   },
   "dependencies": {
     "@prisma/client": "6.16.1",
     "@shared": "workspace:*",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "jest-mock-extended": "^4.0.0",
     "joi": "^18.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
