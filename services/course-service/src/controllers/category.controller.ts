@@ -1,9 +1,22 @@
 import type { Request, Response } from "express";
 import * as categoryService from "../services/category.service";
-import { ApiError, catchAsync } from "@shared";
+import { ApiError, catchAsync, delByPrefix } from "@shared";
+
+const clearCategoryCaches = async (categoryId?: number, categorySlug?: string) => {
+  const tasks: Promise<any>[] = [];
+
+  if (categoryId) tasks.push(delByPrefix(`categories:detail:/categories/${categoryId}`))
+  if (categorySlug) tasks.push(delByPrefix(`categories:detail:/categories/${categorySlug}`))
+
+  tasks.push(delByPrefix("categories:list"))
+  tasks.push(delByPrefix("categories:root"))
+
+  await Promise.allSettled(tasks)
+}
 
 export const createCategory = catchAsync(async (req: Request, res: Response) => {
   const category = await categoryService.createCategory(req.body);
+  await clearCategoryCaches()
   return res.success({ category }, "Category created", 201);
 });
 
@@ -41,12 +54,14 @@ export const getCategory = catchAsync(async (req: Request, res: Response) => {
 
 export const updateCategory = catchAsync(async (req: Request, res: Response) => {
   const categoryId = parseInt(req.params.id);
-  const category = await categoryService.updateCategory(categoryId, req.body);
-  return res.success({ category }, "Category updated");
+  const { updated, oldSlug } = await categoryService.updateCategory(categoryId, req.body);
+  await clearCategoryCaches(updated.id, oldSlug)
+  return res.success({ category: updated }, "Category updated");
 });
 
 export const deleteCategory = catchAsync(async (req: Request, res: Response) => {
   const categoryId = parseInt(req.params.id);
   await categoryService.deleteCategory(categoryId);
+  await clearCategoryCaches(categoryId)
   return res.success(null, "Category deleted");
 });

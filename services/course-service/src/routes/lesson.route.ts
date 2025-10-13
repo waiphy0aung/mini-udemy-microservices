@@ -7,6 +7,12 @@ import * as validations from "../validations/lesson.validation"
 const lessonRouter: RouterType = Router()
 
 lessonRouter.get(
+  "/sections/:sectionId/lessons",
+  cache({ prefix: "lessons:list", ttl: 300 }),
+  lessonController.getSectionLessons
+);
+
+lessonRouter.get(
   "/lessons/:id",
   cache({ prefix: "lessons:detail", ttl: 300 }),
   lessonController.getLessonById
